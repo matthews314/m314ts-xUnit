@@ -1,5 +1,29 @@
 {
   "devDependencies": {
     "@types/node": "^18.7.6"
-  }
+  },
+  "name": "m314ts-xunit",
+  "description": "My take on xUnit in TypeScript.",
+  "version": "0.1.7",
+  "main": "dst/main.js",
+  "types": "dst/main.d.ts",
+  "scripts": {
+    "build": "rmdir /s /q .\\lib && tsc && copy .\\src\\.npmignore .\\lib\\.npmignore",
+    "tests": "npm run build && node ./lib/tests/no-test-result-test.js && node ./lib/tests/testcase-base-test.js && node ./lib/tests/testcase-result-test.js && node ./lib/tests/testresult-test.js && node ./lib/tests/testsuite-test.js",
+    "prepublish": "npm run build && npm run tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matthews314/m314ts-xUnit.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/matthews314/m314ts-xUnit/issues"
+  },
+  "homepage": "https://github.com/matthews314/m314ts-xUnit#readme",
+  "files": [
+    "/lib"
+  ]
 }

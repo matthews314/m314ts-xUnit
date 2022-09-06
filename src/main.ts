@@ -1,1 +1,1 @@
-export { TestCase } from "./testcase";
+export { TestCase } from "./core/testcase";

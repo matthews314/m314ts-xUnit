@@ -1,16 +1,18 @@
 {
   "devDependencies": {
-    "@types/node": "^18.7.6"
+    "@types/node": "^18.7.15"
   },
   "name": "m314ts-xunit",
   "description": "My take on xUnit in TypeScript.",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "main": "dst/main.js",
   "types": "dst/main.d.ts",
   "scripts": {
-    "build": "rmdir /s /q .\\lib && tsc && copy .\\src\\.npmignore .\\lib\\.npmignore",
-    "tests": "npm run build && node ./lib/tests/no-test-result-test.js && node ./lib/tests/testcase-base-test.js && node ./lib/tests/testcase-result-test.js && node ./lib/tests/testresult-test.js && node ./lib/tests/testsuite-test.js",
-    "prepublish": "npm run build && npm run tests"
+    "clean": "rmdir /s /q .\\lib",
+    "build": "tsc && copy .\\src\\.npmignore .\\lib\\.npmignore",
+    "cleanAndBuild": "npm run clean && npm run build",
+    "tests": "node .\\lib\\finder\\runtests.js .\\lib",
+    "prepublish": "npm run clean && npm run build && npm run tests"
   },
   "repository": {
     "type": "git",

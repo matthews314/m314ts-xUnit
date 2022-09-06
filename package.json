@@ -4,9 +4,9 @@
   },
   "name": "m314ts-xunit",
   "description": "My take on xUnit in TypeScript.",
-  "version": "0.1.8",
-  "main": "dst/main.js",
-  "types": "dst/main.d.ts",
+  "version": "0.1.10",
+  "main": "lib/main.js",
+  "types": "lib/main.d.ts",
   "scripts": {
     "clean": "rmdir /s /q .\\lib",
     "build": "tsc && copy .\\src\\.npmignore .\\lib\\.npmignore",

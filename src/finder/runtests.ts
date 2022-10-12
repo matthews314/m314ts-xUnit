@@ -24,6 +24,5 @@ let finder = new TestFinder(getFSWrapper());
 let found = finder.find(rootpath);
 
 found.forEach(f => {
-    const node = spawnSync('node', [f.getPath()], { encoding : 'utf8' });
-    process.stdout.write(node.stdout);
-});
+    import(f.getPath());
+})

@@ -37,4 +37,4 @@ class BaseTests extends TestCase {
     }
 }
 
-new BaseTests().runAllAndLog(console);
+new BaseTests('').runAllAndLog(console);

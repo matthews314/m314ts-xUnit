@@ -21,7 +21,7 @@ export abstract class TestCase {
     private name: string;
     private prototype;
     
-    constructor(name: string = '') {
+    constructor(name: string) {
         this.name = name;
         this.prototype = Object.getPrototypeOf(this);
     }

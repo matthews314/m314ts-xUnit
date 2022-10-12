@@ -30,4 +30,4 @@ class NoTestResultTest extends TestCase {
     }
 }
 
-new NoTestResultTest().runAllAndLog(console);
+new NoTestResultTest('').runAllAndLog(console);

@@ -84,4 +84,4 @@ class TestResultTest extends TestCase {
     }
 }
 
-new TestResultTest().runAllAndLog(console);
+new TestResultTest('').runAllAndLog(console);

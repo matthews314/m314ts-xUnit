@@ -48,4 +48,4 @@ class TestCaseTest extends TestCase {
     }
 }
 
-new TestCaseTest().runAllAndLog(console);
+new TestCaseTest('').runAllAndLog(console);

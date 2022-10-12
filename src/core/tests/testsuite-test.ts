@@ -22,4 +22,4 @@ class TestSuiteTest extends TestCase {
     }
 }
 
-new TestSuiteTest().runAllAndLog(console);
+new TestSuiteTest('').runAllAndLog(console);

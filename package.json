@@ -8,11 +8,16 @@
   "main": "lib/main.js",
   "types": "lib/main.d.ts",
   "scripts": {
-    "clean": "rmdir /s /q .\\lib",
-    "build": "tsc && copy .\\src\\.npmignore .\\lib\\.npmignore",
+    "clean": "rm -r ./lib",
+    "build": "tsc && cp ./src/.npmignore ./lib/.npmignore",
     "cleanAndBuild": "npm run clean && npm run build",
-    "tests": "node .\\lib\\finder\\runtests.js .\\lib",
-    "prepublish": "npm run clean && npm run build && npm run tests"
+    "tests": "node ./lib/finder/runtests.js ./lib",
+    "prepublish": "npm run clean && npm run build && npm run tests",
+    "wclean": "rmdir /s /q .\\lib",
+    "wbuild": "tsc && copy .\\src\\.npmignore .\\lib\\.npmignore",
+    "wcleanAndBuild": "npm run wclean && npm run wbuild",
+    "wtests": "node .\\lib\\finder\\runtests.js .\\lib",
+    "wprepublish": "npm run wclean && npm run wbuild && npm run wtests"
   },
   "repository": {
     "type": "git",

@@ -67,7 +67,7 @@ export abstract class TestCase {
     
     public assertEqual(a: any, b: any) {
         if (typeof a !== typeof b) throw new Error("Type mismatch! " + typeof a + " is not equal to " + typeof b);
-        if (a !== b) throw new Error("Arguments have same type but are different!");
+        if (a !== b) throw new Error("Arguments have the very same type but are different!");
     }
 
     public assertTrue(x: boolean) {

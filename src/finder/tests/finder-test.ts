@@ -37,4 +37,4 @@ class FinderTest extends TestCase {
     }
 }
 
-new FinderTest().runAllAndLog(console);
+new FinderTest('').runAllAndLog(console);

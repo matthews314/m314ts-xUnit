@@ -34,4 +34,4 @@ class FSWrapperTest extends TestCase {
     }
 }
 
-new FSWrapperTest().runAllAndLog(console);
+new FSWrapperTest('').runAllAndLog(console);

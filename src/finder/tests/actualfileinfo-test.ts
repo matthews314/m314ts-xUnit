@@ -51,4 +51,4 @@ class ActualFileInfoTest extends TestCase {
     }
 }
 
-new ActualFileInfoTest().runAllAndLog(console);
+new ActualFileInfoTest('').runAllAndLog(console);

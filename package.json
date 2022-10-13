@@ -4,11 +4,11 @@
   },
   "name": "m314ts-xunit",
   "description": "My take on xUnit in TypeScript.",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "main": "lib/main.js",
   "types": "lib/main.d.ts",
   "scripts": {
-    "clean": "rm -r ./lib",
+    "clean": "rm -rf ./lib",
     "build": "tsc && cp ./src/.npmignore ./lib/.npmignore",
     "cleanAndBuild": "npm run clean && npm run build",
     "tests": "node ./lib/finder/runtests.js ./lib",

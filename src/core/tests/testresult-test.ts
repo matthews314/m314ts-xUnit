@@ -1,7 +1,7 @@
 import { TestResult, TestResultImpl, NoTestResult } from "../testresult";
 import { TestCase } from "../testcase";
 
-class TestResultTest extends TestCase {
+export class TestResultTest extends TestCase {
     public result: TestResult = new NoTestResult();
 
     public setUp(): void {
@@ -83,5 +83,3 @@ class TestResultTest extends TestCase {
         this.assertEqual(expectedSummary, this.result.summary());
     }
 }
-
-new TestResultTest('').runAllAndLog(console);

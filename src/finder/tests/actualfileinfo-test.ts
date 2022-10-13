@@ -5,7 +5,7 @@ import { getFSWrapper } from "../fswrapper";
 import { getTestDataFileInfo, getTestDataPath, TEST_DATA_FOLDER_NAME } from "./auxiliary/filesystem-test-utils";
 
 
-class ActualFileInfoTest extends TestCase {
+export class ActualFileInfoTest extends TestCase {
     private fileAPath: string = '';
     private fileDPath: string = '';
     private fileA: FileInfo = new NoFileInfo();
@@ -50,5 +50,3 @@ class ActualFileInfoTest extends TestCase {
         this.assertEqual('.txt', this.fileD.getExtension());
     }
 }
-
-new ActualFileInfoTest('').runAllAndLog(console);

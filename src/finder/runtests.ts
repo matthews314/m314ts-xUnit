@@ -1,6 +1,5 @@
 import { getFSWrapper } from "./fswrapper";
 import { TestFinder } from "./testfinder";
-import { spawnSync } from "child_process";
 import { argv, exit } from "process";
 import { getProjectRootPath } from "./getprojectroot";
 import path from "path";
@@ -24,5 +23,8 @@ let finder = new TestFinder(getFSWrapper());
 let found = finder.find(rootpath);
 
 found.forEach(f => {
-    import(f.getPath());
+    import(f.getPath()).then((module) => {
+        let classObj = module[Object.keys(module)[0]];
+        new classObj('').runAllAndLog(console);
+    });
 })

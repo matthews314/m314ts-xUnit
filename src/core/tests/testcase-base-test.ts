@@ -2,7 +2,7 @@ import { TestResult, TestResultImpl, NoTestResult } from "../testresult";
 import { TestCase } from "../testcase";
 import { FakeTestCase, BrokenSetUpTestCase } from "./auxiliary/faketestcases";
 
-class BaseTests extends TestCase {
+export class BaseTests extends TestCase {
     private result: TestResult = new NoTestResult();
 
     public setUp(): void {
@@ -36,5 +36,3 @@ class BaseTests extends TestCase {
         this.assertEqual(test.log, "setUp tearDown ");
     }
 }
-
-new BaseTests('').runAllAndLog(console);

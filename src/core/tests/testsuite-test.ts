@@ -1,7 +1,7 @@
 import { TestCase } from "../testcase";
 import { FakeTestCase } from "./auxiliary/faketestcases";
 
-class TestSuiteTest extends TestCase {
+export class TestSuiteTest extends TestCase {
 
     public setUp(): void {
         // do nothing
@@ -21,5 +21,3 @@ class TestSuiteTest extends TestCase {
         this.assertTrue(summary.startsWith(expectedSummaryBeginning));
     }
 }
-
-new TestSuiteTest('').runAllAndLog(console);

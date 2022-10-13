@@ -2,7 +2,7 @@ import { TestResult, TestResultImpl, NoTestResult } from "../testresult";
 import { TestSuite, TestCase } from "../testcase";
 import { FakeTestCase, BrokenSetUpTestCase } from "./auxiliary/faketestcases"
 
-class TestCaseTest extends TestCase {
+export class TestCaseTest extends TestCase {
     private result: TestResult = new NoTestResult();
 
     public setUp(): void {
@@ -47,5 +47,3 @@ class TestCaseTest extends TestCase {
         this.assertFalse(this.result.isSuccess());
     }
 }
-
-new TestCaseTest('').runAllAndLog(console);

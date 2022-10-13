@@ -1,7 +1,8 @@
 import { TestResult, NoTestResult } from "../testresult";
 import { TestCase } from "../testcase";
 
-class NoTestResultTest extends TestCase {
+
+export class NoTestResultTest extends TestCase {
     private result: TestResult = new NoTestResult();
 
     public setUp(): void {
@@ -29,5 +30,3 @@ class NoTestResultTest extends TestCase {
         }
     }
 }
-
-new NoTestResultTest('').runAllAndLog(console);

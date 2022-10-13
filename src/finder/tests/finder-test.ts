@@ -3,7 +3,8 @@ import { FSWrapper } from "../fswrapper";
 import { TestFinder } from "../testfinder";
 import { FakeFSWrapper, ROOT_FOLDER1, ROOT_FOLDER2_FOLDER3, ROOT_PATH } from "./auxiliary/fakefswrapper";
 
-class FinderTest extends TestCase {
+
+export class FinderTest extends TestCase {
     private fsWrapper: FSWrapper = new FakeFSWrapper();
     private finder: TestFinder = new TestFinder(this.fsWrapper);
 
@@ -36,5 +37,3 @@ class FinderTest extends TestCase {
         this.assertEqual(found[1].getExtension(), '.js');
     }
 }
-
-new FinderTest('').runAllAndLog(console);

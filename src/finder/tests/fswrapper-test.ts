@@ -4,7 +4,8 @@ import { FileInfo } from "../fileinfo";
 import { getFSWrapper } from "../fswrapper";
 import { getTestDataFileInfo, getTestDataPath } from "./auxiliary/filesystem-test-utils";
 
-class FSWrapperTest extends TestCase {
+
+export class FSWrapperTest extends TestCase {
 
     public setUp(): void {
     }
@@ -33,5 +34,3 @@ class FSWrapperTest extends TestCase {
         this.assertEqual('.txt', fileInfos[3].getExtension());
     }
 }
-
-new FSWrapperTest('').runAllAndLog(console);

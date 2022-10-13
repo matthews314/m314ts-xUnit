@@ -69,19 +69,28 @@ export abstract class TestCase {
         if (typeof a !== typeof b) throw new Error("Type mismatch! " + (typeof a) + " is not equal to " + (typeof b));
         if (a !== b) {
             let type = typeof a;
-            if (typeof a === 'symbol') {
-                a = (a as Symbol).toString();
-                b = (b as Symbol).toString();
-            }
-            if (typeof a === 'string') {
-                a = this.indentMultilineString(a);
-                b = this.indentMultilineString(b);
-            }
-            let errormsg = `Arguments have the same type (${type}) but are different!\n` +
-                'First Argument:\n\t' + a + '\n' +
-                'Second Argument:\n\t' + b;
-            throw new Error(errormsg);   
+            if (typeof a === 'string') this.handleDifferentStrings(a, b);
+            else if (typeof a === 'symbol') this.handleDifferentSymbols(a, b);
+            else throw new Error(this.errormsg(type, a, b));
         }
+    }
+
+    private handleDifferentStrings(a: string, b: string) {
+        a = this.indentMultilineString(a);
+        b = this.indentMultilineString(b);
+        throw new Error(this.errormsg('string', a, b));
+    }
+
+    private handleDifferentSymbols(a: Symbol, b: Symbol) {
+        let arg1: string = this.indentMultilineString(a.toString());
+        let arg2: string = this.indentMultilineString(b.toString());
+        throw new Error(this.errormsg('symbol', arg1, arg2));
+    }
+
+    private errormsg(type: string, a: any, b: any) {
+        return 'Arguments have the same type (' + type + ') but are different!\n' +
+            'First Argument:\n\t' + a + '\n' +
+            'Second Argument:\n\t' + b;
     }
 
     private indentMultilineString(str: string) {

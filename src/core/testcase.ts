@@ -66,8 +66,34 @@ export abstract class TestCase {
     }
     
     public assertEqual(a: any, b: any) {
-        if (typeof a !== typeof b) throw new Error("Type mismatch! " + typeof a + " is not equal to " + typeof b);
-        if (a !== b) throw new Error("Arguments have same type but are different!");
+        if (typeof a !== typeof b) throw new Error("Type mismatch! " + (typeof a) + " is not equal to " + (typeof b));
+        if (a !== b) {
+            let type = typeof a;
+            if (typeof a === 'symbol') {
+                a = (a as Symbol).toString();
+                b = (b as Symbol).toString();
+            }
+            if (typeof a === 'string') {
+                a = this.indentMultilineString(a);
+                b = this.indentMultilineString(b);
+            }
+            let errormsg = `Arguments have the same type (${type}) but are different!\n` +
+                'First Argument:\n\t' + a + '\n' +
+                'Second Argument:\n\t' + b;
+            throw new Error(errormsg);   
+        }
+    }
+
+    private indentMultilineString(str: string) {
+        let result = '';
+        if (str !== '') {
+            let lines = str.split('\n');
+            result = lines[0];
+            for (let i = 1; i < lines.length; ++i) {
+                result += '\n\t' + lines[i];
+            }
+        }
+        return result;
     }
 
     public assertTrue(x: boolean) {

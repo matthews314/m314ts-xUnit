@@ -37,15 +37,17 @@ export abstract class TestCase {
     public runAll(): string {
         let suite = new TestSuite();
         let constructor = this.prototype.constructor;
-        
+        let testNames: string[] = [];
+
         for (let name of Object.getOwnPropertyNames(this.prototype)) {
             if (name.startsWith('test')) {
                 let newTest = new constructor(name);
                 suite.add(newTest);
+                testNames.push(name);
             }
         }
         
-        let result = new TestResultImpl(constructor.name);
+        let result = new TestResultImpl(constructor.name, testNames);
         suite.run(result);
         return result.summary();
     }

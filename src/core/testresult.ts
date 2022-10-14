@@ -12,9 +12,11 @@ export class TestResultImpl implements TestResult {
     private errorCount: number = 0;
     private failedTestNames: string[] = [];
     private errors: any[] = [];
+    private testReportOrder: string[];
 
-    constructor(name: string) {
+    constructor(name: string, testReportOrder: string[]) {
         this.name = name;
+        this.testReportOrder = testReportOrder;
     }
 
     public testStarted(): void {
@@ -42,13 +44,16 @@ export class TestResultImpl implements TestResult {
         if (this.isSuccess()) return summary;
         else {
             summary += ":\n\n";
-            for (let i = 0; i < this.failedTestNames.length; i++) {
-                let testName = this.failedTestNames[i];
-                let error = this.errors[i];
-                summary += '- ' + testName + '\n';
-                summary += error.stack + '\n';
-                summary += '\n';
+            for (let testName of this.testReportOrder) {
+                if (this.failedTestNames.includes(testName)) {
+                    let idx = this.failedTestNames.indexOf(testName);
+                    let error = this.errors[idx];
+                    summary += '- ' + testName + '\n';
+                    summary += error.stack + '\n';
+                    summary += '\n';
+                }
             }
+
             return summary;
         }
     }

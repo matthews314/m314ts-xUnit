@@ -5,7 +5,14 @@ export class TestResultTest extends TestCase {
     public result: TestResult = new NoTestResult();
 
     public setUp(): void {
-        this.result = new TestResultImpl('TestName');
+        let testReportOrder = [
+            'randomTestName_1',
+            'testSupposedToFail_1',
+            'randomTestName_2',
+            'testSupposedToFail_2',
+            'randomTestName_3'
+        ];
+        this.result = new TestResultImpl('TestName', testReportOrder);
     }
 
     public tearDown(): void {
@@ -56,20 +63,20 @@ export class TestResultTest extends TestCase {
     }
         
     public testUnsuccessfulSummary(): void {
-        let error = new Error("Failed!");
+        let error1 = new Error("Failed!");
         let error2 = new Error("And failed again!");
 
         this.testStarted(3);
-        this.result.testFailed('testSupposedToFail', error);
-        this.result.testFailed('evenThisSupposedToFail', error2);
+        this.result.testFailed('testSupposedToFail_2', error2);
+        this.result.testFailed('testSupposedToFail_1', error1);
 
         let expectedSummary =
             'TestName: 3 run, 2 failed:\n' +
             '\n' +
-            '- testSupposedToFail\n' +
-            error.stack + '\n' +
+            '- testSupposedToFail_1\n' +
+            error1.stack + '\n' +
             '\n' +
-            '- evenThisSupposedToFail\n' +
+            '- testSupposedToFail_2\n' +
             error2.stack + '\n' +
             '\n';
         this.assertEqual(expectedSummary, this.result.summary());

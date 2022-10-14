@@ -6,7 +6,7 @@ export class BaseTests extends TestCase {
     private result: TestResult = new NoTestResult();
 
     public setUp(): void {
-        this.result = new TestResultImpl('FakeTestCase');
+        this.result = new TestResultImpl('FakeTestCase', []);
     }
 
     public tearDown(): void {

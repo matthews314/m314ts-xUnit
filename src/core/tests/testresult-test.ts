@@ -13,7 +13,7 @@ export class TestResultTest extends TestCase {
     }
 
     public testSuccessfulResult(): void {
-        this.result.testStarted();
+        this.testStarted(1);
         this.assertTrue(this.result.isSuccess());
     }
 
@@ -40,19 +40,18 @@ export class TestResultTest extends TestCase {
     }
 
     public testUnsuccessfulResult(): void {
-        this.result.testStarted();
+        this.testStarted(1);
         this.result.testFailed('testName', new Error('Error msg'));
         this.assertFalse(this.result.isSuccess());
     }
     
     public testSuccessfulSummaryForOneTest(): void {
-        this.result.testStarted();
+        this.testStarted(1);
         this.assertEqual('TestName: 1 run, 0 failed', this.result.summary());
     }
     
     public testSuccessfulSummaryForTwoTests(): void {
-        this.result.testStarted();
-        this.result.testStarted();
+        this.testStarted(2);
         this.assertEqual('TestName: 2 run, 0 failed', this.result.summary());
     }
         
@@ -60,9 +59,7 @@ export class TestResultTest extends TestCase {
         let error = new Error("Failed!");
         let error2 = new Error("And failed again!");
 
-        this.result.testStarted();
-        this.result.testStarted();
-        this.result.testStarted();
+        this.testStarted(3);
         this.result.testFailed('testSupposedToFail', error);
         this.result.testFailed('evenThisSupposedToFail', error2);
 
@@ -76,5 +73,9 @@ export class TestResultTest extends TestCase {
             error2.stack + '\n' +
             '\n';
         this.assertEqual(expectedSummary, this.result.summary());
+    }
+
+    private testStarted(times: number) {
+        for (let i = 0; i < times; ++i) this.result.testStarted();
     }
 }

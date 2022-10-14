@@ -1,5 +1,4 @@
 export interface TestResult {
-    setName(name: string): void;
     testStarted(): void;
     testFailed(testName: string, error: any): void;
     isSuccess(): boolean;
@@ -14,7 +13,7 @@ export class TestResultImpl implements TestResult {
     private failedTestNames: string[] = [];
     private errors: any[] = [];
 
-    public setName(name: string): void {
+    constructor(name: string) {
         this.name = name;
     }
 

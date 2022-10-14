@@ -35,17 +35,17 @@ export abstract class TestCase {
     }
 
     public runAll(): string {
-        let result = new TestResultImpl();
         let suite = new TestSuite();
         let constructor = this.prototype.constructor;
-        result.setName(constructor.name);
-
+        
         for (let name of Object.getOwnPropertyNames(this.prototype)) {
             if (name.startsWith('test')) {
                 let newTest = new constructor(name);
                 suite.add(newTest);
             }
         }
+        
+        let result = new TestResultImpl(constructor.name);
         suite.run(result);
         return result.summary();
     }
@@ -116,4 +116,17 @@ export abstract class TestCase {
     public fail() {
         throw new Error("Test was forced to fail!");
     }
+}
+
+function shuffle(array: any[]) {
+    let currentIndex = array.length, randomIndex;
+
+    while (currentIndex != 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
 }

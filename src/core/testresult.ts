@@ -7,55 +7,60 @@ export interface TestResult {
 
 
 export class TestResultImpl implements TestResult {
-    private name: string = '';
+    private testClassName: string = '';
     private runCount: number = 0;
-    private errorCount: number = 0;
-    private failedTestNames: string[] = [];
-    private errors: any[] = [];
     private testReportOrder: string[];
+    private failedTestInfos: Map<string, any>;
 
-    constructor(name: string, testReportOrder: string[]) {
-        this.name = name;
+    constructor(testClassName: string, testReportOrder: string[]) {
+        if (!testClassName) throw new Error("Can't create TestResult with empty test class name!");
+        this.testClassName = testClassName;
         this.testReportOrder = testReportOrder;
+        this.failedTestInfos = new Map<string, any>();
+    }
+    
+    private get failedCount(): number {
+        return this.failedTestInfos.size;
     }
 
     public testStarted(): void {
         this.runCount++;
     }
-
+    
     public testFailed(testName: string, error: any): void {
-        this.errorCount++;
-        this.failedTestNames.push(testName);
-        this.errors.push(error);
+        this.failedTestInfos.set(testName, error);
     }
 
     public isSuccess(): boolean {
-        if (this.errorCount > this.runCount) throw new Error("Failed tests cannot be more than run tests!");
-        return this.errorCount === 0;
+        if (this.failedCount > this.runCount) throw new Error("Failed tests cannot be more than run tests!");
+        return this.failedCount === 0;
+    }
+    
+    public summary(): string {
+        let summary = this.testClassName + ': ' + this.runCount.toString() + " run, " + this.failedCount.toString() + " failed";
+        if (this.isSuccess()) return summary;
+
+        return summary + ":\n\n" + this.failedMethodsSummary();
     }
 
-    public summary(): string {
-        let summary = '';
-        if (this.name !== '') {
-            summary += this.name + ': ';
-        }
-        summary += this.runCount.toString() + " run, " + this.errorCount.toString() + " failed";
+    private failedMethodsSummary() {
+        return this.testReportOrder.map(t => this.infosFor(t)).reduce(this.concat)
+    }
 
-        if (this.isSuccess()) return summary;
-        else {
-            summary += ":\n\n";
-            for (let testName of this.testReportOrder) {
-                if (this.failedTestNames.includes(testName)) {
-                    let idx = this.failedTestNames.indexOf(testName);
-                    let error = this.errors[idx];
-                    summary += '- ' + testName + '\n';
-                    summary += error.stack + '\n';
-                    summary += '\n';
-                }
-            }
+    private infosFor(testName: string): string {
+        if (testName && this.failedTestInfos.has(testName)) return this.formatFailedErrorSummary(testName);
+        return '';
+    }
 
-            return summary;
-        }
+    private formatFailedErrorSummary(testName: string) {
+        let summary = '- ' + testName + '\n';
+        summary += this.failedTestInfos.get(testName).stack + '\n\n';
+        return summary;
+    }
+
+    private concat(previous: string, current: string) {
+        if (previous) return previous + current;
+        else return current;
     }
 }
 

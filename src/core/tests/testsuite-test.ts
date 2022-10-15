@@ -1,5 +1,5 @@
 import { TestCase } from "../testcase";
-import { FakeTestCase } from "./auxiliary/faketestcases";
+import { FakeTestCase } from "./auxiliary/faketestcase";
 
 export class TestSuiteTest extends TestCase {
 

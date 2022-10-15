@@ -1,6 +1,6 @@
 import { TestResult, TestResultImpl, NoTestResult } from "../testresult";
 import { TestCase } from "../testcase";
-import { FakeTestCase, BrokenSetUpTestCase } from "./auxiliary/faketestcases";
+import { FakeTestCase, BrokenSetUpTestCase } from "./auxiliary/faketestcase";
 
 export class BaseTests extends TestCase {
     private result: TestResult = new NoTestResult();

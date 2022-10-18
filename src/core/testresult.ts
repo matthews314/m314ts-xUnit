@@ -1,3 +1,5 @@
+import { M314UsageError } from "../util/errors";
+
 export interface TestResult {
     testStarted(testName: string): void;
     testFailed(testName: string, error: any): void;
@@ -13,7 +15,7 @@ export class TestResultImpl implements TestResult {
 
     constructor(testClassName: string, testReportOrder: string[]) {
         if (!testClassName) throw new Error("Can't create TestResult with empty test class name!");
-        if (testReportOrder.includes('')) throw new Error('Report order must contain valid method names - it cannot contain empty strings!');
+        if (testReportOrder.includes('')) throw new M314UsageError('Report order must contain valid method names - it cannot contain empty strings!');
         this.testClassName = testClassName;
         this.testReportOrder = testReportOrder;
         this.testInfos = new Map<string, any>();
@@ -32,12 +34,12 @@ export class TestResultImpl implements TestResult {
     }
 
     public testStarted(testName: string): void {
-        if (this.testInfos.has(testName)) throw new Error(`Test method "${testName}" already started!`);
+        if (this.testInfos.has(testName)) throw new M314UsageError(`Test method "${testName}" already started!`);
         this.testInfos.set(testName, null);
     }
     
     public testFailed(testName: string, error: any): void {
-        if (!this.testInfos.has(testName)) throw new Error(`Test method "${testName}" failed but never started!`);
+        if (!this.testInfos.has(testName)) throw new M314UsageError(`Test method "${testName}" failed but never started!`);
         this.testInfos.set(testName, error);
     }
 
@@ -46,8 +48,8 @@ export class TestResultImpl implements TestResult {
     }
     
     public summary(): string {
-        if (!this.allTestsRan()) throw new Error('Not all tests ran!');
-        if (!this.allTestsWereExpected()) throw new Error('Ran more tests than those in report order array!');
+        if (!this.allTestsRan()) throw new M314UsageError('Not all tests ran!');
+        if (!this.allTestsWereExpected()) throw new M314UsageError('Ran more tests than those in report order array!');
         let summary = this.testClassName + ': ' + this.runCount.toString() + " run, " + this.failedCount.toString() + " failed";
         if (this.isSuccess()) return summary;
 

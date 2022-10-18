@@ -1,5 +1,6 @@
 import { TestResult, TestResultImpl, NoTestResult } from "../testresult";
 import { TestCase } from "../testcase";
+import { M314UsageError } from "../../util/errors";
 
 export class TestResultTest extends TestCase {
     private result: TestResult = new NoTestResult();
@@ -19,7 +20,8 @@ export class TestResultTest extends TestCase {
             new TestResultImpl('TestName', testReportOrder);
             this.fail();
         } catch (error) {
-            let e = <Error> error;
+            if ((<Object> error).constructor.name !== M314UsageError.name) throw error;
+            let e = <M314UsageError> error;
             this.assertEqual(e.message, 'Report order must contain valid method names - it cannot contain empty strings!');
         }
     }
@@ -30,7 +32,8 @@ export class TestResultTest extends TestCase {
             this.result.summary();
             this.fail();
         } catch (error) {
-            let e = <Error> error;
+            if ((<Object> error).constructor.name !== M314UsageError.name) throw error;
+            let e = <M314UsageError> error;
             this.assertEqual(e.message, 'Not all tests ran!');
         }
     }
@@ -41,7 +44,8 @@ export class TestResultTest extends TestCase {
             this.result.summary();
             this.fail();
         } catch (error) {
-            let e = <Error> error;
+            if ((<Object> error).constructor.name !== M314UsageError.name) throw error;
+            let e = <M314UsageError> error;
             this.assertEqual(e.message, 'Ran more tests than those in report order array!')
         }
     }
@@ -57,7 +61,8 @@ export class TestResultTest extends TestCase {
             this.startSuccessfulTest('t1');
             this.fail();
         } catch (error) {
-            let e = <Error> error;
+            if ((<Object> error).constructor.name !== M314UsageError.name) throw error;
+            let e = <M314UsageError> error;
             this.assertEqual(e.message, 'Test method "t1" already started!');
         }
     }
@@ -67,7 +72,8 @@ export class TestResultTest extends TestCase {
             this.result.testFailed('testName', new Error('Error msg'));
             this.fail();
         } catch (error) {
-            let e = <Error> error;
+            if ((<Object> error).constructor.name !== M314UsageError.name) throw error;
+            let e = <M314UsageError> error;
             this.assertEqual(e.message, 'Test method "testName" failed but never started!');
         }
     }

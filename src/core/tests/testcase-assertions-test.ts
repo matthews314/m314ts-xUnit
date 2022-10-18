@@ -1,4 +1,4 @@
-import { TestCase, TestFailedError, TestFailedForcefullyError } from "../testcase";
+import { TestCase, TestFailedError } from "../testcase";
 
 
 export class AssertionsTest extends TestCase {
@@ -18,7 +18,7 @@ export class AssertionsTest extends TestCase {
         } catch (error) {
             if ((<Object> error).constructor.name !== TestFailedError.name) throw error;
             let e = <TestFailedError> error;
-            if (e.message === "Test was forced to fail!") throw error;
+            if (e.failedForcefully) throw error;
             this.assertEqual(e.message, "Expected true, but was false!");
         }
     }
@@ -30,7 +30,7 @@ export class AssertionsTest extends TestCase {
         } catch (error) {
             if ((<Object> error).constructor.name !== TestFailedError.name) throw error;
             let e = <TestFailedError> error;
-            if (e.message === "Test was forced to fail!") throw error;
+            if (e.failedForcefully) throw error;
             this.assertEqual(e.message, "Expected false, but was true!");
         }
     }
@@ -39,8 +39,9 @@ export class AssertionsTest extends TestCase {
         try {
             this.fail();
         } catch (error) {
-            if ((<Object> error).constructor.name !== TestFailedForcefullyError.name) throw error;
-            let e = <TestFailedForcefullyError> error;
+            if ((<Object> error).constructor.name !== TestFailedError.name) throw error;
+            let e = <TestFailedError> error;
+            this.assertTrue(e.failedForcefully);
             this.assertEqual(e.message, 'Test was forced to fail!');
         }
     }
@@ -143,7 +144,7 @@ export class AssertionsTest extends TestCase {
         } catch (error) {
             if ((<Object> error).constructor.name !== TestFailedError.name) throw error;
             let e = <TestFailedError> error;
-            if (e.message === "Test was forced to fail!") throw error;
+            if (e.failedForcefully) throw error;
             this.assertEqual(e.message, expectedMsg);
         }
     }

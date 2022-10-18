@@ -14,12 +14,16 @@ export class TestSuite {
 }
 
 
-export class TestFailedError extends Error {};
+export class TestFailedError extends Error {
+    private forced: boolean;
 
+    constructor(message: string, forced: boolean = false, options: ErrorOptions | undefined = undefined) {
+        super(message, options);
+        this.forced = forced;
+    }
 
-export class TestFailedForcefullyError extends TestFailedError {
-    constructor() {
-        super('Test was forced to fail!');
+    public get failedForcefully(): boolean {
+        return this.forced;
     }
 };
 
@@ -123,7 +127,7 @@ export abstract class TestCase {
     }
 
     public fail() {
-        throw new TestFailedForcefullyError();
+        throw new TestFailedError('Test was forced to fail!', true);
     }
 }
 

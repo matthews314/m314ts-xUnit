@@ -35,13 +35,6 @@ export class TestResultTest extends TestCase {
         }
     }
 
-    private runAllTestsButOne() {
-        for (let i = 1; i <= 4; i++) {
-            this.result.testStarted('t' + i.toString());
-            if (i % 2 === 0) this.result.testFailed('t' + i.toString(), new Error('test error message'));
-        }
-    }
-
     public testAllRanTestMustBeInReportOrder(): void {
         try {
             this.runAllTestsPlusOne();
@@ -53,22 +46,9 @@ export class TestResultTest extends TestCase {
         }
     }
 
-    private runAllTestsPlusOne() {
-        for (let i = 1; i <= 6; i++) {
-            this.result.testStarted('t' + i.toString());
-            if (i % 2 === 0) this.result.testFailed('t' + i.toString(), new Error('test error message'));
-        }
-    }
-
     public testSuccessfulResult(): void {
         this.runAllTestsSuccessfully();
         this.assertTrue(this.result.isSuccess());
-    }
-
-    private runAllTestsSuccessfully(): void {
-        for (let i = 1; i <= 5; i++) {
-            this.result.testStarted('t' + i.toString());
-        }
     }
 
     public testCantRunSameTestTwice(): void {
@@ -93,8 +73,7 @@ export class TestResultTest extends TestCase {
     }
 
     public testUnsuccessfulResult(): void {
-        this.startSuccessfulTest('testName');
-        this.result.testFailed('testName', new Error('Error msg'));
+        this.startFailingTest('t1', new Error('Test error msg'));
         this.assertFalse(this.result.isSuccess());
     }
     
@@ -132,5 +111,25 @@ export class TestResultTest extends TestCase {
     private startFailingTest(testName: string, error: any) {
         this.result.testStarted(testName);
         this.result.testFailed(testName, error);
+    }
+
+    private runAllTestsButOne() {
+        for (let i = 1; i <= 4; i++) {
+            this.result.testStarted('t' + i.toString());
+            if (i % 2 === 0) this.result.testFailed('t' + i.toString(), new Error('test error message'));
+        }
+    }
+
+    private runAllTestsPlusOne() {
+        for (let i = 1; i <= 6; i++) {
+            this.result.testStarted('t' + i.toString());
+            if (i % 2 === 0) this.result.testFailed('t' + i.toString(), new Error('test error message'));
+        }
+    }
+
+    private runAllTestsSuccessfully(): void {
+        for (let i = 1; i <= 5; i++) {
+            this.result.testStarted('t' + i.toString());
+        }
     }
 }

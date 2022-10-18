@@ -53,7 +53,7 @@ export abstract class TestCase {
     }
 
     public run(result: TestResult) {
-        result.testStarted();
+        result.testStarted(this.name);
         try {
             this.setUp();
             // @ts-ignore

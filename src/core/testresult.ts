@@ -1,5 +1,5 @@
 export interface TestResult {
-    testStarted(): void;
+    testStarted(testName: string): void;
     testFailed(testName: string, error: any): void;
     isSuccess(): boolean;
     summary(): string;
@@ -8,27 +8,37 @@ export interface TestResult {
 
 export class TestResultImpl implements TestResult {
     private testClassName: string = '';
-    private runCount: number = 0;
     private testReportOrder: string[];
-    private failedTestInfos: Map<string, any>;
+    private testInfos: Map<string, any>;
 
     constructor(testClassName: string, testReportOrder: string[]) {
         if (!testClassName) throw new Error("Can't create TestResult with empty test class name!");
+        if (testReportOrder.includes('')) throw new Error('Report order must contain valid method names - it cannot contain empty strings!');
         this.testClassName = testClassName;
         this.testReportOrder = testReportOrder;
-        this.failedTestInfos = new Map<string, any>();
+        this.testInfos = new Map<string, any>();
     }
     
-    private get failedCount(): number {
-        return this.failedTestInfos.size;
+    private get runCount(): number {
+        return this.testInfos.size;
     }
 
-    public testStarted(): void {
-        this.runCount++;
+    private get failedCount(): number {
+        let count = 0;
+        for (let value of this.testInfos.values()) {
+            if (value !== null) count++;
+        }
+        return count;
+    }
+
+    public testStarted(testName: string): void {
+        if (this.testInfos.has(testName)) throw new Error(`Test method "${testName}" already started!`);
+        this.testInfos.set(testName, null);
     }
     
     public testFailed(testName: string, error: any): void {
-        this.failedTestInfos.set(testName, error);
+        if (!this.testInfos.has(testName)) throw new Error(`Test method "${testName}" failed but never started!`);
+        this.testInfos.set(testName, error);
     }
 
     public isSuccess(): boolean {
@@ -37,28 +47,41 @@ export class TestResultImpl implements TestResult {
     }
     
     public summary(): string {
+        if (!this.allTestsRan()) throw new Error('Not all tests ran!');
+        if (!this.allTestsWereExpected()) throw new Error('Ran more tests than those in report order array!');
         let summary = this.testClassName + ': ' + this.runCount.toString() + " run, " + this.failedCount.toString() + " failed";
         if (this.isSuccess()) return summary;
 
         return summary + ":\n\n" + this.failedMethodsSummary();
     }
 
-    private failedMethodsSummary() {
-        return this.testReportOrder.map(t => this.infosFor(t)).reduce(this.concat)
+    private allTestsRan(): boolean {
+        return this.testReportOrder.every(t => this.testInfos.has(t));   
+    }
+
+    private allTestsWereExpected(): boolean {
+        let ranTests = Array.from(this.testInfos.keys());
+        return ranTests.every(t => this.testReportOrder.includes(t));
+    }
+
+    private failedMethodsSummary(): string {
+        return this.testReportOrder.map(t => this.infosFor(t)).reduce(this.concat);
     }
 
     private infosFor(testName: string): string {
-        if (testName && this.failedTestInfos.has(testName)) return this.formatFailedErrorSummary(testName);
+        // TODO non dovrei controllare this.testInfos.has(testName) -> exception se nella lista c'è qualche test che poi non c'è nella mappa.
+        // Devono coincidere, perché alla fine si fanno girare tutti...
+        if (this.testInfos.has(testName) && (this.testInfos.get(testName) !== null)) return this.formatFailedErrorSummary(testName);
         return '';
     }
 
-    private formatFailedErrorSummary(testName: string) {
+    private formatFailedErrorSummary(testName: string): string {
         let summary = '- ' + testName + '\n';
-        summary += this.failedTestInfos.get(testName).stack + '\n\n';
+        summary += this.testInfos.get(testName).stack + '\n\n';
         return summary;
     }
 
-    private concat(previous: string, current: string) {
+    private concat(previous: string, current: string): string {
         if (previous) return previous + current;
         else return current;
     }

@@ -16,7 +16,7 @@ export class NoTestResultTest extends TestCase {
     public testErrorOnEveryMethod() {
         this._testError(() => this.result.isSuccess());
         this._testError(() => this.result.summary());
-        this._testError(() => this.result.testStarted());
+        this._testError(() => this.result.testStarted('testName'));
         this._testError(() => this.result.testFailed('testName', new Error('Error message!')));
     }
 

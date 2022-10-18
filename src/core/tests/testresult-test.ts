@@ -2,16 +2,10 @@ import { TestResult, TestResultImpl, NoTestResult } from "../testresult";
 import { TestCase } from "../testcase";
 
 export class TestResultTest extends TestCase {
-    public result: TestResult = new NoTestResult();
+    private result: TestResult = new NoTestResult();
 
     public setUp(): void {
-        let testReportOrder = [
-            'randomTestName_1',
-            'testSupposedToFail_1',
-            'randomTestName_2',
-            'testSupposedToFail_2',
-            'randomTestName_3'
-        ];
+        let testReportOrder = ['t1', 't2', 't3', 't4', 't5'];
         this.result = new TestResultImpl('TestName', testReportOrder);
     }
 
@@ -19,70 +13,124 @@ export class TestResultTest extends TestCase {
         // do nothing
     }
 
-    public testSuccessfulResult(): void {
-        this.testStarted(1);
-        this.assertTrue(this.result.isSuccess());
-    }
-
-    public testIsSuccessFailsIfFailedTestsOutnumberRunTests(): void {
+    public testNoEmptyStringsAcceptedInTestReportOrder(): void {
         try {
-            this.result.testFailed('testName', new Error('Error msg'));
-            this.result.isSuccess();
+            let testReportOrder = ['t1', ''];
+            new TestResultImpl('TestName', testReportOrder);
             this.fail();
         } catch (error) {
             let e = <Error> error;
-            this.assertEqual(e.message, "Failed tests cannot be more than run tests!");
+            this.assertEqual(e.message, 'Report order must contain valid method names - it cannot contain empty strings!');
         }
     }
 
-    public testSummaryFailsIfFailedTestsOutnumberRunTests(): void {
+    public testAllTestsInReportOrderMustRun(): void {
         try {
-            this.result.testFailed('testName', new Error('Error msg'));
+            this.runAllTestsButOne();
             this.result.summary();
             this.fail();
         } catch (error) {
             let e = <Error> error;
-            this.assertEqual(e.message, "Failed tests cannot be more than run tests!");
+            this.assertEqual(e.message, 'Not all tests ran!');
+        }
+    }
+
+    private runAllTestsButOne() {
+        for (let i = 1; i <= 4; i++) {
+            this.result.testStarted('t' + i.toString());
+            if (i % 2 === 0) this.result.testFailed('t' + i.toString(), new Error('test error message'));
+        }
+    }
+
+    public testAllRanTestMustBeInReportOrder(): void {
+        try {
+            this.runAllTestsPlusOne();
+            this.result.summary();
+            this.fail();
+        } catch (error) {
+            let e = <Error> error;
+            this.assertEqual(e.message, 'Ran more tests than those in report order array!')
+        }
+    }
+
+    private runAllTestsPlusOne() {
+        for (let i = 1; i <= 6; i++) {
+            this.result.testStarted('t' + i.toString());
+            if (i % 2 === 0) this.result.testFailed('t' + i.toString(), new Error('test error message'));
+        }
+    }
+
+    public testSuccessfulResult(): void {
+        this.runAllTestsSuccessfully();
+        this.assertTrue(this.result.isSuccess());
+    }
+
+    private runAllTestsSuccessfully(): void {
+        for (let i = 1; i <= 5; i++) {
+            this.result.testStarted('t' + i.toString());
+        }
+    }
+
+    public testCantRunSameTestTwice(): void {
+        this.startSuccessfulTest('t1');
+        try {
+            this.startSuccessfulTest('t1');
+            this.fail();
+        } catch (error) {
+            let e = <Error> error;
+            this.assertEqual(e.message, 'Test method "t1" already started!');
+        }
+    }
+
+    public testErrorThrownIfTestFailsAndTestStartedNotCalled(): void {
+        try {
+            this.result.testFailed('testName', new Error('Error msg'));
+            this.fail();
+        } catch (error) {
+            let e = <Error> error;
+            this.assertEqual(e.message, 'Test method "testName" failed but never started!');
         }
     }
 
     public testUnsuccessfulResult(): void {
-        this.testStarted(1);
+        this.startSuccessfulTest('testName');
         this.result.testFailed('testName', new Error('Error msg'));
         this.assertFalse(this.result.isSuccess());
     }
     
-    public testSuccessfulSummaryForOneTest(): void {
-        this.testStarted(1);
-        this.assertEqual('TestName: 1 run, 0 failed', this.result.summary());
-    }
-    
-    public testSuccessfulSummaryForTwoTests(): void {
-        this.testStarted(2);
-        this.assertEqual('TestName: 2 run, 0 failed', this.result.summary());
+    public testSuccessfulSummary(): void {
+        this.runAllTestsSuccessfully();
+        this.assertEqual('TestName: 5 run, 0 failed', this.result.summary());
     }
         
     public testUnsuccessfulSummary(): void {
         let error1 = new Error("Failed!");
         let error2 = new Error("And failed again!");
 
-        this.testStarted(3);
-        this.result.testFailed('testSupposedToFail_2', error2);
-        this.result.testFailed('testSupposedToFail_1', error1);
+        this.startFailingTest('t4', error2);
+        this.startSuccessfulTest('t1');
+        this.startFailingTest('t2', error1);
+        this.startSuccessfulTest('t5');
+        this.startSuccessfulTest('t3');
 
         let expectedSummary =
-            'TestName: 3 run, 2 failed:\n' +
+            'TestName: 5 run, 2 failed:\n' +
             '\n' +
-            '- testSupposedToFail_1\n' +
+            '- t2\n' +
             error1.stack + '\n' +
             '\n' +
-            '- testSupposedToFail_2\n' +
+            '- t4\n' +
             error2.stack + '\n' +
             '\n';
         this.assertEqual(expectedSummary, this.result.summary());
     }
 
-    private testStarted(times: number) {
-        for (let i = 0; i < times; ++i) this.result.testStarted();
+    private startSuccessfulTest(testName: string) {
+        this.result.testStarted(testName);
+    }
+
+    private startFailingTest(testName: string, error: any) {
+        this.result.testStarted(testName);
+        this.result.testFailed(testName, error);
     }
 }

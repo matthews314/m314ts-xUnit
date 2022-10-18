@@ -42,7 +42,6 @@ export class TestResultImpl implements TestResult {
     }
 
     public isSuccess(): boolean {
-        if (this.failedCount > this.runCount) throw new Error("Failed tests cannot be more than run tests!");
         return this.failedCount === 0;
     }
     

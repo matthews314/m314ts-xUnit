@@ -8,10 +8,7 @@ export class TestSuite {
     }
 
     public run(result: TestResult) {
-        for (let testCase of this.testCases) {
-            testCase.run(result);
-        }
-        
+        shuffle(this.testCases).forEach(t => t.run(result));        
         return result;
     }
 }

@@ -1,4 +1,4 @@
-import { TestCase } from "../testcase";
+import { TestCase, TestFailedError, TestFailedForcefullyError } from "../testcase";
 
 
 export class AssertionsTest extends TestCase {
@@ -9,6 +9,40 @@ export class AssertionsTest extends TestCase {
 
     public tearDown(): void {
         // do nothing
+    }
+
+    public testAssertTrue(): void {
+        try {
+            this.assertTrue(false);
+            this.fail();
+        } catch (error) {
+            if ((<Object> error).constructor.name !== TestFailedError.name) throw error;
+            let e = <TestFailedError> error;
+            if (e.message === "Test was forced to fail!") throw error;
+            this.assertEqual(e.message, "Expected true, but was false!");
+        }
+    }
+
+    public testAssertFalse(): void {
+        try {
+            this.assertFalse(true);
+            this.fail();
+        } catch (error) {
+            if ((<Object> error).constructor.name !== TestFailedError.name) throw error;
+            let e = <TestFailedError> error;
+            if (e.message === "Test was forced to fail!") throw error;
+            this.assertEqual(e.message, "Expected false, but was true!");
+        }
+    }
+
+    public testFail(): void {
+        try {
+            this.fail();
+        } catch (error) {
+            if ((<Object> error).constructor.name !== TestFailedForcefullyError.name) throw error;
+            let e = <TestFailedForcefullyError> error;
+            this.assertEqual(e.message, 'Test was forced to fail!');
+        }
     }
 
     public testUndefinedEqualsUndefined(): void {
@@ -107,7 +141,8 @@ export class AssertionsTest extends TestCase {
             this.assertEqual(arg1, arg2);
             this.fail();
         } catch (error) {
-            let e = <Error> error;
+            if ((<Object> error).constructor.name !== TestFailedError.name) throw error;
+            let e = <TestFailedError> error;
             if (e.message === "Test was forced to fail!") throw error;
             this.assertEqual(e.message, expectedMsg);
         }

@@ -14,6 +14,16 @@ export class TestSuite {
 }
 
 
+export class TestFailedError extends Error {};
+
+
+export class TestFailedForcefullyError extends TestFailedError {
+    constructor() {
+        super('Test was forced to fail!');
+    }
+};
+
+
 export abstract class TestCase {
     private name: string;
     private prototype;
@@ -65,25 +75,25 @@ export abstract class TestCase {
     }
     
     public assertEqual(a: any, b: any) {
-        if (typeof a !== typeof b) throw new Error("Type mismatch! " + (typeof a) + " is not equal to " + (typeof b));
+        if (typeof a !== typeof b) throw new TestFailedError("Type mismatch! " + (typeof a) + " is not equal to " + (typeof b));
         if (a !== b) {
             let type = typeof a;
             if (typeof a === 'string') this.handleDifferentStrings(a, b);
             else if (typeof a === 'symbol') this.handleDifferentSymbols(a, b);
-            else throw new Error(this.errormsg(type, a, b));
+            else throw new TestFailedError(this.errormsg(type, a, b));
         }
     }
 
     private handleDifferentStrings(a: string, b: string) {
         a = this.indentMultilineString(a);
         b = this.indentMultilineString(b);
-        throw new Error(this.errormsg('string', a, b));
+        throw new TestFailedError(this.errormsg('string', a, b));
     }
 
     private handleDifferentSymbols(a: Symbol, b: Symbol) {
         let arg1: string = this.indentMultilineString(a.toString());
         let arg2: string = this.indentMultilineString(b.toString());
-        throw new Error(this.errormsg('symbol', arg1, arg2));
+        throw new TestFailedError(this.errormsg('symbol', arg1, arg2));
     }
 
     private errormsg(type: string, a: any, b: any) {
@@ -105,15 +115,15 @@ export abstract class TestCase {
     }
 
     public assertTrue(x: boolean) {
-        if (!x) throw new Error("Expected true, but was false!");
+        if (!x) throw new TestFailedError("Expected true, but was false!");
     }
 
     public assertFalse(x: boolean) {
-        if (x) throw new Error("Expected false, but was true!");
+        if (x) throw new TestFailedError("Expected false, but was true!");
     }
 
     public fail() {
-        throw new Error("Test was forced to fail!");
+        throw new TestFailedForcefullyError();
     }
 }
 

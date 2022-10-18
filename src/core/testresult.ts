@@ -69,8 +69,6 @@ export class TestResultImpl implements TestResult {
     }
 
     private infosFor(testName: string): string {
-        // TODO non dovrei controllare this.testInfos.has(testName) -> exception se nella lista c'è qualche test che poi non c'è nella mappa.
-        // Devono coincidere, perché alla fine si fanno girare tutti...
         if (this.testInfos.has(testName) && (this.testInfos.get(testName) !== null)) return this.formatFailedErrorSummary(testName);
         return '';
     }

@@ -20,14 +20,8 @@ export class AssertionsTest extends TestCase {
     }
 
     public testFail(): void {
-        try {
-            this.fail();
-        } catch (error) {
-            if ((<Object> error).constructor.name !== TestFailedError.name) throw error;
-            let e = <TestFailedError> error;
-            this.assertTrue(e.failedForcefully);
-            this.assertEqual(e.message, 'Test was forced to fail!');
-        }
+        let e: TestFailedError = this.assertThrowsError(() => this.fail(), TestFailedError.name, 'Test was forced to fail!');
+        this.assertTrue(e.failedForcefully);
     }
 
     public testUndefinedEqualsUndefined(): void {

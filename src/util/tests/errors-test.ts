@@ -13,6 +13,6 @@ export class ErrorsTest extends TestCase {
 
     public testUsageError() {
         let error = new M314UsageError("This is a usage error!");
-        this.assertEqual(error.message, "This is a usage errro!");
+        this.assertEqual(error.message, "This is a usage error!");
     }
 }

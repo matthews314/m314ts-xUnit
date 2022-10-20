@@ -55,6 +55,24 @@ export class AssertThrowsErrorTest extends TestCase {
         };
         this.assertThrowsError(f, TestFailedError.name, "Expected error's class to be WrongError, but was MyError!");
     }
+    
+    testNoErrorThrown(): void {
+        const f = () => {
+            this.assertThrowsError(() => {}, MyError.name);
+        }
+        this.assertThrowsError(f, TestFailedError.name, "Function argument didn't throw any error!");
+    }
+
+    testAssertThrowsErrorCanTestItself(): void {
+        try {
+            const f = () => {
+                this.assertThrowsError(() => {}, MyError.name);
+            }
+            this.assertThrowsError(f, TestFailedError.name, "Function argument didn't throw any error!");
+        } catch (error) {
+            this.fail();
+        }
+    }
 
     private errorThrower(errorMsg: string | undefined = undefined): () => void {
         if (errorMsg) return () => { throw new MyError(errorMsg); };

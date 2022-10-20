@@ -131,27 +131,16 @@ export abstract class TestCase {
     }
 
     public assertThrowsError(f: () => void, expectedClassName: string, expectedMessage: string | undefined = undefined): any {
+        let errorNotThrownError = new TestFailedError("Function argument didn't throw any error!");
         try {
             f();
-            throw new TestFailedError("Argument function didn't throw any error!");
+            throw errorNotThrownError;
         } catch (error) {
-            if (this.thrownByUs(error)) throw error;
+            if (error === errorNotThrownError) throw error;
             this.assertErrorClass(error, expectedClassName);
             if (expectedMessage !== undefined) this.assertErrorMessage(error, expectedMessage);
             return error;
         }
-    }
-
-    private thrownByUs(error: any) {
-        return this.isTestFailedError(error) && this.hasMessage(error, "Argument function didn't throw any error!");
-    }
-
-    private isTestFailedError(error: any) {
-        return (<Object> error).constructor.name === TestFailedError.name;
-    }
-
-    private hasMessage(error: any, message: string) {
-        return (<TestFailedError> error).message === message;
     }
 
     private assertErrorClass(error: any, expected: string) {

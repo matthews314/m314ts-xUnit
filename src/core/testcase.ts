@@ -1,3 +1,4 @@
+import { threadId } from "worker_threads";
 import { TestResult, TestResultImpl } from "./testresult";
 
 export class TestSuite {
@@ -128,6 +129,25 @@ export abstract class TestCase {
 
     public fail() {
         throw new TestFailedError('Test was forced to fail!', true);
+    }
+
+    public assertThrowsError(f: () => void, errorClassName: string, errorMessage: string | undefined = undefined) {
+        try {
+            f();
+            throw new TestFailedError("Argument function didn't throw any error!");
+        } catch (error) {
+            const actualErrorClassName = (<Object> error).constructor.name
+
+            if (actualErrorClassName === TestFailedError.name && (<TestFailedError> error).message === "Argument function didn't throw any error!")
+                throw error;
+            
+            if (actualErrorClassName !== errorClassName) throw new TestFailedError(`Expected error's class to be ${errorClassName}, but was ${actualErrorClassName}!`);
+            
+            if (errorMessage !== undefined) {
+                const actualErrorMessage = (<Error> error).message;
+                if (actualErrorMessage !== errorMessage) throw new TestFailedError(`Expected error message to be "${errorMessage}", but was "${actualErrorMessage}"!`)
+            }
+        }
     }
 }
 

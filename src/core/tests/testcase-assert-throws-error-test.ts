@@ -8,7 +8,7 @@ export class AssertThrowsErrorTest extends TestCase {
     setUp(): void {
         // do nothing
     }
-    
+
     tearDown(): void {
         // do nothing
     }
@@ -27,6 +27,12 @@ export class AssertThrowsErrorTest extends TestCase {
     
     testMessageCheckedHappyPath(): void {
         this.assertThrowsError(this.errorThrower('test error'), MyError.name, 'test error');
+    }
+
+    testReturnsError(): void {
+        let e = this.assertThrowsError(this.errorThrower('very specific message'), MyError.name);
+        this.assertEqual((<Object> e).constructor.name, MyError.name);
+        this.assertEqual((<MyError> e).message, 'very specific message');
     }
 
     testMessageCheckedSadPath(): void {

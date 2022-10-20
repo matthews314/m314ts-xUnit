@@ -131,7 +131,7 @@ export abstract class TestCase {
         throw new TestFailedError('Test was forced to fail!', true);
     }
 
-    public assertThrowsError(f: () => void, expectedClassName: string, expectedMessage: string | undefined = undefined) {
+    public assertThrowsError(f: () => void, expectedClassName: string, expectedMessage: string | undefined = undefined): any {
         try {
             f();
             throw new TestFailedError("Argument function didn't throw any error!");
@@ -139,6 +139,7 @@ export abstract class TestCase {
             if (this.thrownByUs(error)) throw error;
             this.assertErrorClass(error, expectedClassName);
             if (expectedMessage !== undefined) this.assertErrorMessage(error, expectedMessage);
+            return error;
         }
     }
 

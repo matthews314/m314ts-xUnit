@@ -12,11 +12,7 @@ export class ErrorsTest extends TestCase {
     }
 
     public testUsageError() {
-        try {
-            throw new M314UsageError("This is a usage error!");
-            this.fail();
-        } catch (error) {
-            this.assertEqual((<M314UsageError> error).message, "This is a usage error!");
-        }
+        let error = new M314UsageError("This is a usage error!");
+        this.assertEqual(error.message, "This is a usage errro!");
     }
 }

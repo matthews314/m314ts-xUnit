@@ -131,23 +131,37 @@ export abstract class TestCase {
         throw new TestFailedError('Test was forced to fail!', true);
     }
 
-    public assertThrowsError(f: () => void, errorClassName: string, errorMessage: string | undefined = undefined) {
+    public assertThrowsError(f: () => void, expectedClassName: string, expectedMessage: string | undefined = undefined) {
         try {
             f();
             throw new TestFailedError("Argument function didn't throw any error!");
         } catch (error) {
-            const actualErrorClassName = (<Object> error).constructor.name
-
-            if (actualErrorClassName === TestFailedError.name && (<TestFailedError> error).message === "Argument function didn't throw any error!")
-                throw error;
-            
-            if (actualErrorClassName !== errorClassName) throw new TestFailedError(`Expected error's class to be ${errorClassName}, but was ${actualErrorClassName}!`);
-            
-            if (errorMessage !== undefined) {
-                const actualErrorMessage = (<Error> error).message;
-                if (actualErrorMessage !== errorMessage) throw new TestFailedError(`Expected error message to be "${errorMessage}", but was "${actualErrorMessage}"!`)
-            }
+            if (this.thrownByUs(error)) throw error;
+            this.assertErrorClass(error, expectedClassName);
+            if (expectedMessage !== undefined) this.assertErrorMessage(error, expectedMessage);
         }
+    }
+
+    private thrownByUs(error: any) {
+        return this.isTestFailedError(error) && this.hasMessage(error, "Argument function didn't throw any error!");
+    }
+
+    private isTestFailedError(error: any) {
+        return (<Object> error).constructor.name === TestFailedError.name;
+    }
+
+    private hasMessage(error: any, message: string) {
+        return (<TestFailedError> error).message === message;
+    }
+
+    private assertErrorClass(error: any, expected: string) {
+        const eClassName = (<Object> error).constructor.name;
+        if (eClassName !== expected) throw new TestFailedError(`Expected error's class to be ${expected}, but was ${eClassName}!`)
+    }
+
+    private assertErrorMessage(error: any, expected: string) {
+        const eMsg = (<Error> error).message;
+        if (eMsg !== expected) throw new TestFailedError(`Expected error message to be "${expected}", but was "${eMsg}"!`)
     }
 }
 

@@ -22,13 +22,6 @@ export class NoTestResultTest extends TestCase {
     }
 
     private _testError(callable: any) {
-        try {
-            callable();
-            this.fail();
-        } catch (error) {
-            if ((<Object> error).constructor.name !== M314UsageError.name) throw error;
-            let e = <M314UsageError> error;
-            this.assertEqual(e.message, "Method not implemented.");
-        }
+        this.assertThrowsError(callable, M314UsageError.name, "Method not implemented.");
     }
 }

@@ -1,5 +1,6 @@
 import { TestResult, NoTestResult } from "../testresult";
-import { TestCase } from "../testcase";
+import { TestCase, TestFailedError } from "../testcase";
+import { M314UsageError } from "../../util/errors";
 
 
 export class NoTestResultTest extends TestCase {
@@ -17,7 +18,7 @@ export class NoTestResultTest extends TestCase {
         this._testError(() => this.result.isSuccess());
         this._testError(() => this.result.summary());
         this._testError(() => this.result.testStarted('testName'));
-        this._testError(() => this.result.testFailed('testName', new Error('Error message!')));
+        this._testError(() => this.result.testFailed('testName', new TestFailedError('Error message!')));
     }
 
     private _testError(callable: any) {
@@ -25,7 +26,8 @@ export class NoTestResultTest extends TestCase {
             callable();
             this.fail();
         } catch (error) {
-            let e = <Error> error;
+            if ((<Object> error).constructor.name !== M314UsageError.name) throw error;
+            let e = <M314UsageError> error;
             this.assertEqual(e.message, "Method not implemented.");
         }
     }

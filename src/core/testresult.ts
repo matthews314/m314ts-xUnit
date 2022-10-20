@@ -89,18 +89,18 @@ export class TestResultImpl implements TestResult {
 
 export class NoTestResult implements TestResult {
     setName(name: string): void {
-        throw new Error("Method not implemented.");
+        throw new M314UsageError("Method not implemented.");
     }
     testStarted(): void {
-        throw new Error("Method not implemented.");
+        throw new M314UsageError("Method not implemented.");
     }
     testFailed(): void {
-        throw new Error("Method not implemented.");
+        throw new M314UsageError("Method not implemented.");
     }
     summary(): string {
-        throw new Error("Method not implemented.");
+        throw new M314UsageError("Method not implemented.");
     }
     isSuccess(): boolean {
-        throw new Error("Method not implemented.");
+        throw new M314UsageError("Method not implemented.");
     }
 }

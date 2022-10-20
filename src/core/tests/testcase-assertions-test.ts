@@ -12,27 +12,11 @@ export class AssertionsTest extends TestCase {
     }
 
     public testAssertTrue(): void {
-        try {
-            this.assertTrue(false);
-            this.fail();
-        } catch (error) {
-            if ((<Object> error).constructor.name !== TestFailedError.name) throw error;
-            let e = <TestFailedError> error;
-            if (e.failedForcefully) throw error;
-            this.assertEqual(e.message, "Expected true, but was false!");
-        }
+        this.assertThrowsError(() => this.assertTrue(false), TestFailedError.name, "Expected true, but was false!");
     }
 
     public testAssertFalse(): void {
-        try {
-            this.assertFalse(true);
-            this.fail();
-        } catch (error) {
-            if ((<Object> error).constructor.name !== TestFailedError.name) throw error;
-            let e = <TestFailedError> error;
-            if (e.failedForcefully) throw error;
-            this.assertEqual(e.message, "Expected false, but was true!");
-        }
+        this.assertThrowsError(() => this.assertFalse(true), TestFailedError.name, "Expected false, but was true!");
     }
 
     public testFail(): void {
@@ -138,14 +122,6 @@ export class AssertionsTest extends TestCase {
     }
 
     private assertErrorMessageForAssertEqual(arg1: any, arg2: any, expectedMsg: string) {
-        try {
-            this.assertEqual(arg1, arg2);
-            this.fail();
-        } catch (error) {
-            if ((<Object> error).constructor.name !== TestFailedError.name) throw error;
-            let e = <TestFailedError> error;
-            if (e.failedForcefully) throw error;
-            this.assertEqual(e.message, expectedMsg);
-        }
+        this.assertThrowsError(() => this.assertEqual(arg1, arg2), TestFailedError.name, expectedMsg);
     }
 }

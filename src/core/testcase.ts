@@ -1,3 +1,4 @@
+import { threadId } from "worker_threads";
 import { TestResult, TestResultImpl } from "./testresult";
 
 export class TestSuite {
@@ -128,6 +129,40 @@ export abstract class TestCase {
 
     public fail() {
         throw new TestFailedError('Test was forced to fail!', true);
+    }
+
+    public assertThrowsError(f: () => void, expectedClassName: string, expectedMessage: string | undefined = undefined): any {
+        try {
+            f();
+            throw new TestFailedError("Argument function didn't throw any error!");
+        } catch (error) {
+            if (this.thrownByUs(error)) throw error;
+            this.assertErrorClass(error, expectedClassName);
+            if (expectedMessage !== undefined) this.assertErrorMessage(error, expectedMessage);
+            return error;
+        }
+    }
+
+    private thrownByUs(error: any) {
+        return this.isTestFailedError(error) && this.hasMessage(error, "Argument function didn't throw any error!");
+    }
+
+    private isTestFailedError(error: any) {
+        return (<Object> error).constructor.name === TestFailedError.name;
+    }
+
+    private hasMessage(error: any, message: string) {
+        return (<TestFailedError> error).message === message;
+    }
+
+    private assertErrorClass(error: any, expected: string) {
+        const eClassName = (<Object> error).constructor.name;
+        if (eClassName !== expected) throw new TestFailedError(`Expected error's class to be ${expected}, but was ${eClassName}!`)
+    }
+
+    private assertErrorMessage(error: any, expected: string) {
+        const eMsg = (<Error> error).message;
+        if (eMsg !== expected) throw new TestFailedError(`Expected error message to be "${expected}", but was "${eMsg}"!`)
     }
 }
 

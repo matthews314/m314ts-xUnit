@@ -15,39 +15,27 @@ export class TestResultTest extends TestCase {
     }
 
     public testNoEmptyStringsAcceptedInTestReportOrder(): void {
-        try {
-            let testReportOrder = ['t1', ''];
-            new TestResultImpl('TestName', testReportOrder);
-            this.fail();
-        } catch (error) {
-            if ((<Object> error).constructor.name !== M314UsageError.name) throw error;
-            let e = <M314UsageError> error;
-            this.assertEqual(e.message, 'Report order must contain valid method names - it cannot contain empty strings!');
-        }
+        this.assertThrowsError(
+            () => new TestResultImpl('TestName', ['t1', '']),
+            M314UsageError.name,
+            'Report order must contain valid method names - it cannot contain empty strings!'
+        );
     }
 
     public testAllTestsInReportOrderMustRun(): void {
-        try {
-            this.runAllTestsButOne();
-            this.result.summary();
-            this.fail();
-        } catch (error) {
-            if ((<Object> error).constructor.name !== M314UsageError.name) throw error;
-            let e = <M314UsageError> error;
-            this.assertEqual(e.message, 'Not all tests ran!');
-        }
+        this.assertThrowsError(
+            () => { this.runAllTestsButOne(); this.result.summary(); },
+            M314UsageError.name,
+            'Not all tests ran!'
+        );
     }
 
     public testAllRanTestMustBeInReportOrder(): void {
-        try {
-            this.runAllTestsPlusOne();
-            this.result.summary();
-            this.fail();
-        } catch (error) {
-            if ((<Object> error).constructor.name !== M314UsageError.name) throw error;
-            let e = <M314UsageError> error;
-            this.assertEqual(e.message, 'Ran more tests than those in report order array!')
-        }
+        this.assertThrowsError(
+            () => { this.runAllTestsPlusOne(); this.result.summary(); },
+            M314UsageError.name,
+            'Ran more tests than those in report order array!'
+        )
     }
 
     public testSuccessfulResult(): void {
@@ -57,25 +45,15 @@ export class TestResultTest extends TestCase {
 
     public testCantRunSameTestTwice(): void {
         this.startSuccessfulTest('t1');
-        try {
-            this.startSuccessfulTest('t1');
-            this.fail();
-        } catch (error) {
-            if ((<Object> error).constructor.name !== M314UsageError.name) throw error;
-            let e = <M314UsageError> error;
-            this.assertEqual(e.message, 'Test method "t1" already started!');
-        }
+        this.assertThrowsError(() => this.startSuccessfulTest('t1'), M314UsageError.name, 'Test method "t1" already started!');
     }
 
     public testErrorThrownIfTestFailsAndTestStartedNotCalled(): void {
-        try {
-            this.result.testFailed('testName', new Error('Error msg'));
-            this.fail();
-        } catch (error) {
-            if ((<Object> error).constructor.name !== M314UsageError.name) throw error;
-            let e = <M314UsageError> error;
-            this.assertEqual(e.message, 'Test method "testName" failed but never started!');
-        }
+        this.assertThrowsError(
+            () => this.result.testFailed('testName', new Error('Error msg')),
+            M314UsageError.name,
+            'Test method "testName" failed but never started!'
+        );
     }
 
     public testUnsuccessfulResult(): void {

@@ -1,4 +1,3 @@
-import { threadId } from "worker_threads";
 import { TestResult, TestResultImpl } from "./testresult";
 
 export class TestSuite {

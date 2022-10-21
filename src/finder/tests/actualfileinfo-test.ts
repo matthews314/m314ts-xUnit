@@ -2,7 +2,7 @@ import * as path from "path";
 import { TestCase } from "../../main";
 import { FileInfo, NoFileInfo } from "../fileinfo";
 import { getFSWrapper } from "../fswrapper";
-import { getTestDataFileInfo, getTestDataPath, TEST_DATA_FOLDER_NAME } from "./auxiliary/filesystem-test-utils";
+import { FS_TEST_DATA_FOLDER_NAME, getTestDataFileInfo, getTestDataPath, TEST_DATA_FOLDER_NAME } from "./auxiliary/filesystem-test-utils";
 
 
 export class ActualFileInfoTest extends TestCase {
@@ -27,7 +27,7 @@ export class ActualFileInfoTest extends TestCase {
     }
 
     public testGetFolderName() {
-        this.assertEqual(TEST_DATA_FOLDER_NAME, getTestDataFileInfo().getName());
+        this.assertEqual(FS_TEST_DATA_FOLDER_NAME, getTestDataFileInfo().getName());
     }
 
     public testGetPathFromActualFileInfo() {

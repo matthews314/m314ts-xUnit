@@ -4,9 +4,10 @@ import { getFSWrapper } from "../../fswrapper";
 import { getProjectRootPath } from "../../getprojectroot";
 
 export const TEST_DATA_FOLDER_NAME: string = 'testdata';
+export const FS_TEST_DATA_FOLDER_NAME: string = 'fs-testdata';
 
 export function getTestDataPath(): string {
-    return path.join(getProjectRootPath(), TEST_DATA_FOLDER_NAME);
+    return path.join(getProjectRootPath(), TEST_DATA_FOLDER_NAME, FS_TEST_DATA_FOLDER_NAME);
 }
 
 export function getTestDataFileInfo(): FileInfo {

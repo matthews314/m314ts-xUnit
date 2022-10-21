@@ -41,10 +41,6 @@ export abstract class TestCase {
     
     abstract tearDown(): void;
 
-    public runAllAndLog(console: Console): void {
-        console.log(this.runAll());
-    }
-
     public runAll(): string {
         let suite = new TestSuite();
         let constructor = this.prototype.constructor;

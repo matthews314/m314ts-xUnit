@@ -6,25 +6,25 @@ export class TestRunner {
 
     async run(testFilePath: string): Promise<string> {
         return await import(testFilePath).then((module) => {
-            let classObj: ObjectConstructor = module[Object.keys(module)[0]];
-            return this.runAll(classObj);
+            let klass = this.getClassFrom(module);
+            let testNames = this.getTestNamesFor(klass);
+            let suite = this.createSuite(klass, testNames);
+            let result = new TestResultImpl(klass.name, testNames);
+            return suite.run(result).summary();
         });
     }
 
-    private runAll(klass: ObjectConstructor) {
-        let suite = new TestSuite();
-        let testNames: string[] = [];
+    private getClassFrom(module: any): ObjectConstructor {
+        return module[Object.keys(module)[0]];
+    }
 
-        for (let name of Object.getOwnPropertyNames(klass.prototype)) {
-            if (name.startsWith('test')) {
-                let newTest = new klass(name);
-                suite.add(<TestCase> newTest);
-                testNames.push(name);
-            }
-        }
-        
-        let result = new TestResultImpl(klass.name, testNames);
-        suite.run(result);
-        return result.summary();     
+    private createSuite(klass: ObjectConstructor, testNames: string[]) {
+        let suite = new TestSuite();
+        testNames.forEach(name => suite.add(<TestCase> new klass(name)));
+        return suite;
+    }
+
+    private getTestNamesFor(klass: ObjectConstructor) {
+        return Object.getOwnPropertyNames(klass.prototype).filter(n => n.startsWith('test'));
     }
 }

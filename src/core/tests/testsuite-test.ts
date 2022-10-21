@@ -1,4 +1,5 @@
 import { TestCase, TestSuite } from "../testcase";
+import { TestResultImpl } from "../testresult";
 import { FakeTestCase } from "./auxiliary/faketestcase";
 import { FakeTestResult } from "./auxiliary/faketestresult";
 
@@ -12,9 +13,10 @@ export class TestSuiteTest extends TestCase {
         // do nothing
     }
     
-    public testRunAll(): void {
-        let testcase = new FakeTestCase();
-        let summary = testcase.runAll();
+    public testRun(): void {
+        let testSuite = this.createTestSuite();
+        let result = new TestResultImpl('FakeTestCase', ['testMethod', 'testMethod2', 'testBrokenMethod']);
+        let summary = testSuite.run(result).summary();
         let expectedSummaryBeginning =
             'FakeTestCase: 3 run, 1 failed:\n' +
             '\n' +

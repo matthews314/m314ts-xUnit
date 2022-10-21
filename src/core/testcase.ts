@@ -29,35 +29,12 @@ export class TestFailedError extends Error {
 
 
 export abstract class TestCase {
-    private name: string;
-    private prototype;
     
-    constructor(name: string) {
-        this.name = name;
-        this.prototype = Object.getPrototypeOf(this);
-    }
+    constructor(private name: string) {}
     
     abstract setUp(): void;
     
     abstract tearDown(): void;
-
-    public runAll(): string {
-        let suite = new TestSuite();
-        let constructor = this.prototype.constructor;
-        let testNames: string[] = [];
-
-        for (let name of Object.getOwnPropertyNames(this.prototype)) {
-            if (name.startsWith('test')) {
-                let newTest = new constructor(name);
-                suite.add(newTest);
-                testNames.push(name);
-            }
-        }
-        
-        let result = new TestResultImpl(constructor.name, testNames);
-        suite.run(result);
-        return result.summary();
-    }
 
     public run(result: TestResult) {
         result.testStarted(this.name);
